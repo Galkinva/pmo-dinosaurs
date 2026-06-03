@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПМО · Динозавры · Парковая Инфраструктура</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --orange:#ff9d00;
+    --red:#f73c5c;
+    --blue:#2a8bea;
+    --cyan:#48caed;
+    --grey:#7E8AA2;
+    --bg:#0d0f14;
+    --bg2:#13161f;
+    --bg3:#181c28;
+    --border:#1e2535;
+    --text:#e8edf5;
+    --muted:#7E8AA2;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Exo 2',Arial,sans-serif;font-size:13px;padding:20px;min-width:900px}
+
+  /* ── Шапка ── */
+  .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .logo-area{display:flex;align-items:center;gap:14px}
+  .logo-mark{flex-shrink:0}
+  .logo-text{}
+  .logo-text .company{font-size:11px;font-weight:700;color:#fff;letter-spacing:1.5px;text-transform:uppercase;line-height:1.2}
+  .logo-text .project{font-size:18px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;line-height:1.1}
+  .header-meta{font-size:10px;color:var(--muted);line-height:1.6;text-align:right}
+  .header-meta span{color:#fff;font-weight:600}
+
+  .kpi-strip{display:flex;gap:8px;margin-bottom:18px}
+  .kpi{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-align:center}
+  .kpi-val{font-size:22px;font-weight:800;line-height:1;margin-bottom:3px}
+  .kpi-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+  .kpi-val.c-o{color:var(--orange)}
+  .kpi-val.c-r{color:var(--red)}
+  .kpi-val.c-b{color:var(--blue)}
+  .kpi-val.c-c{color:var(--cyan)}
+  .kpi-val.c-g{color:#4ade80}
+
+  /* ── Сетка колонок ── */
+  .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .col{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:11px}
+
+  /* Шапка карточки */
+  .col-tag{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+  .col-title{font-size:14px;font-weight:800;color:#fff;line-height:1.2}
+  .col-title span{color:var(--cyan)}
+
+  /* Статус-бейдж */
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;width:fit-content}
+  .badge-risk{background:rgba(247,60,92,.15);color:var(--red);border:1px solid rgba(247,60,92,.3)}
+  .badge-warn{background:rgba(255,157,0,.12);color:var(--orange);border:1px solid rgba(255,157,0,.25)}
+  .badge-ok{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+  .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+  /* Стат-блоки */
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .stat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center}
+  .stat-val{font-size:15px;font-weight:800;line-height:1.1}
+  .stat-lbl{font-size:9px;color:var(--muted);margin-top:2px}
+
+  /* Прогресс */
+  .prog-wrap{margin:2px 0}
+  .prog-head{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px}
+  .prog-pct{font-weight:700;color:#fff}
+  .prog-bg{background:var(--bg3);border-radius:20px;height:7px;overflow:hidden}
+  .prog-bar{height:7px;border-radius:20px}
+
+  /* Gate */
+  .sec-lbl{font-size:9px;color:rgba(126,138,162,.6);text-transform:uppercase;letter-spacing:.8px}
+  .gate{display:flex;justify-content:space-between;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:7px 10px;gap:8px}
+  .gate-name{font-size:11px;color:var(--text);display:flex;align-items:center;gap:6px}
+  .gate-tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+  .gt-risk{background:rgba(247,60,92,.2);color:var(--red)}
+  .gt-warn{background:rgba(255,157,0,.18);color:var(--orange)}
+  .gt-wait{background:rgba(42,139,234,.18);color:var(--cyan)}
+  .gt-ok{background:rgba(74,222,128,.12);color:#4ade80}
+
+  /* Вехи */
+  .milestones{display:flex;flex-direction:column;gap:4px}
+  .ms{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:6px}
+  .ms.done{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.1)}
+  .ms.active{background:rgba(255,157,0,.07);border:1px solid rgba(255,157,0,.2)}
+  .ms.todo{background:var(--bg3);border:1px solid var(--border)}
+  .ms.key{background:rgba(72,202,237,.07);border:1px solid rgba(72,202,237,.3)}
+  .ms-name{font-size:11px;flex:1;line-height:1.3}
+  .ms.key .ms-name{color:var(--cyan);font-weight:700}
+  .ms-date{font-size:10px;color:var(--muted);white-space:nowrap;font-weight:600}
+  .ms.key .ms-date{color:var(--cyan)}
+  .ms-st{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
+  .st-done{background:rgba(74,222,128,.15);color:#4ade80}
+  .st-active{background:rgba(255,157,0,.2);color:var(--orange)}
+  .st-todo{background:var(--border);color:var(--muted)}
+  .st-key{background:rgba(72,202,237,.2);color:var(--cyan)}
+
+  /* Риски */
+  .risks{display:flex;flex-direction:column;gap:4px}
+  .risk-row{display:flex;align-items:flex-start;gap:6px;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px}
+  .risk-name{font-size:11px;color:#c8d0dc;flex:1;line-height:1.3}
+  .risk-emv{font-size:10px;font-weight:700;white-space:nowrap;color:var(--orange)}
+  .rl{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;white-space:nowrap}
+  .rl-crit{background:rgba(247,60,92,.2);color:var(--red)}
+  .rl-high{background:rgba(255,157,0,.18);color:var(--orange)}
+
+  /* Финансы */
+  .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .fin-item{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px 10px}
+  .fin-lbl{font-size:9px;color:var(--muted)}
+  .fin-val{font-size:13px;font-weight:800;margin-top:2px}
+
+  /* Полоса по левому краю колонки */
+  .col.accent-o{border-left:3px solid var(--orange)}
+  .col.accent-b{border-left:3px solid var(--blue)}
+  .col.accent-c{border-left:3px solid var(--cyan)}
+
+  /* Футер */
+  .footer{margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .footer-src{font-size:9px;color:rgba(126,138,162,.5)}
+  .legend{display:flex;gap:12px}
+  .leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted)}
+  .leg-dot{width:8px;height:8px;border-radius:50%}
+</style>
+</head>
+<body>
+
+<!-- ── Шапка ── -->
+<div class="header">
+  <div class="logo-area">
+    <div class="logo-mark">
+      <svg width="72" height="46" viewBox="0 0 72 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="cp-orange"><rect x="0" y="0" width="72" height="46"/></clipPath>
+          <clipPath id="cp-red"><rect x="0" y="0" width="72" height="46"/></clipPath>
+          <clipPath id="cp-blue"><rect x="0" y="0" width="72" height="46"/></clipPath>
+          <clipPath id="cp-cyan"><rect x="0" y="0" width="72" height="46"/></clipPath>
+        </defs>
+        <!-- Оранжевая капсула (нижняя левая) -->
+        <rect x="4" y="15" width="38" height="18" rx="9" fill="#ff9d00" transform="rotate(-30 23 24)"/>
+        <!-- Розово-красный круг -->
+        <circle cx="26" cy="22" r="13" fill="#f73c5c"/>
+        <!-- Синий круг (пересечение) -->
+        <circle cx="37" cy="26" r="13" fill="#2a8bea"/>
+        <!-- Голубая капсула (верхняя правая) -->
+        <rect x="30" y="8" width="30" height="14" rx="7" fill="#48caed" transform="rotate(-30 45 15)"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <div class="company">Парковая Инфраструктура</div>
+      <div class="project">Динозавры</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    РП: <span>Галкин В.А.</span> &nbsp;·&nbsp; Руководитель ПИ: <span>Бурцев А.</span> &nbsp;·&nbsp; Заказчик: <span>ООО «Парк Сказка»</span><br>
+    Производитель: <span>SANHE ROBOT TECHNOLOGY</span> &nbsp;·&nbsp; Статус на <span>03.06.2026</span>
+  </div>
+</div>
+
+<!-- ── KPI-полоса ── -->
+<div class="kpi-strip">
+  <div class="kpi">
+    <div class="kpi-val c-c">12</div>
+    <div class="kpi-lbl">Фигур</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val" style="color:#fff">9 550 179 ₽</div>
+    <div class="kpi-lbl">Контракт с ПС</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val c-g">2 681 263 ₽</div>
+    <div class="kpi-lbl">Маржа до налогов</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val c-g">52,1%</div>
+    <div class="kpi-lbl">ROI проекта</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val c-o">5</div>
+    <div class="kpi-lbl">Крит. рисков</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val c-r">56 дн</div>
+    <div class="kpi-lbl">До дедлайна</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val" style="color:var(--cyan)">28.07.26</div>
+    <div class="kpi-lbl">Дата передачи</div>
+  </div>
+</div>
+
+<!-- ── Три колонки ── -->
+<div class="cols">
+
+  <!-- ── Колонка 1: Закупка и производство ── -->
+  <div class="col accent-o">
+    <div>
+      <div class="col-tag">Фаза 3 · Закупка</div>
+      <div class="col-title">Производство<br><span>SANHE ROBOT TECHNOLOGY</span></div>
+    </div>
+    <div class="badge badge-risk"><span class="dot" style="background:var(--red)"></span> НА РИСКЕ</div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" style="color:var(--orange)">$38 171</div>
+        <div class="stat-lbl">Бюджет EXW</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--cyan)">30.06</div>
+        <div class="stat-lbl">Отгрузка</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" style="color:var(--orange)">3</div>
+        <div class="stat-lbl">Задачи в работе</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:#4ade80">~114k ₽</div>
+        <div class="stat-lbl">Резерв CNY</div>
+      </div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-head">
+        <span>Прогресс фазы</span>
+        <span class="prog-pct">35%</span>
+      </div>
+      <div class="prog-bg">
+        <div class="prog-bar" style="width:35%;background:var(--orange)"></div>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Текущий gate</div>
+    <div class="gate">
+      <div class="gate-name">
+        <span class="dot" style="background:var(--orange)"></span>
+        Подготовка договора SANHE
+      </div>
+      <div class="gate-tag gt-risk">→ G2</div>
+    </div>
+
+    <div class="sec-lbl">Ключевые вехи</div>
+    <div class="milestones">
+      <div class="ms done">
+        <span class="dot" style="background:#4ade80"></span>
+        <span class="ms-name">Аванс 50% ($19 085) выплачен</span>
+        <span class="ms-date">15.05</span>
+        <span class="ms-st st-done">факт</span>
+      </div>
+      <div class="ms done">
+        <span class="dot" style="background:#4ade80"></span>
+        <span class="ms-name">Бриф и проектная документация</span>
+        <span class="ms-date">02.06</span>
+        <span class="ms-st st-done">факт</span>
+      </div>
+      <div class="ms active">
+        <span class="dot" style="background:var(--orange)"></span>
+        <span class="ms-name">Договор с SANHE подписан</span>
+        <span class="ms-date">10.06</span>
+        <span class="ms-st st-active">тек.</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Фигуры готовы к отгрузке</span>
+        <span class="ms-date">30.06</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Финальный платёж SANHE</span>
+        <span class="ms-date">10.07</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Топ-риски (EMV)</div>
+    <div class="risks">
+      <div class="risk-row">
+        <span class="risk-name">Задержка договора SANHE при выплаченном авансе</span>
+        <span class="risk-emv">2 149k</span>
+        <span class="rl rl-crit">крит</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Задержка производства &gt;14 дней — срыв 28.07</span>
+        <span class="risk-emv">950k</span>
+        <span class="rl rl-crit">крит</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Курс CNY/RUB +10% — перерасход ~289k ₽</span>
+        <span class="risk-emv">307k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Колонка 2: Логистика и сертификация ── -->
+  <div class="col accent-b">
+    <div>
+      <div class="col-tag">Фаза 4–5 · Логистика / Таможня / Сертификация</div>
+      <div class="col-title">ООО «Траско» +<br><span>ООО «Проммаштест»</span></div>
+    </div>
+    <div class="badge badge-warn"><span class="dot" style="background:var(--orange)"></span> НЕ НАЧАТО</div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" style="color:var(--blue)">01.07</div>
+        <div class="stat-lbl">Старт фазы</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--red)">21.07</div>
+        <div class="stat-lbl">Выпуск таможни</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" style="color:var(--cyan)">1 524 000 ₽</div>
+        <div class="stat-lbl">Фрахт КНР→Мск</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--cyan)">25.07</div>
+        <div class="stat-lbl">Сертификат</div>
+      </div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-head">
+        <span>Прогресс фазы</span>
+        <span class="prog-pct">0%</span>
+      </div>
+      <div class="prog-bg">
+        <div class="prog-bar" style="width:0%;background:var(--blue)"></div>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Текущий gate</div>
+    <div class="gate">
+      <div class="gate-name">
+        <span class="dot" style="background:#2d3748"></span>
+        Ожидание отгрузки от SANHE
+      </div>
+      <div class="gate-tag gt-wait">блок</div>
+    </div>
+
+    <div class="sec-lbl">Ключевые вехи</div>
+    <div class="milestones">
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Договор с ООО «Траско» заключён</span>
+        <span class="ms-date">17.06</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Страхование груза оформлено</span>
+        <span class="ms-date">19.06</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Таможенная декларация подана</span>
+        <span class="ms-date">10.07</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Таможенный выпуск груза</span>
+        <span class="ms-date">21.07</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Сертификат соответствия получен</span>
+        <span class="ms-date">25.07</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Топ-риски (EMV)</div>
+    <div class="risks">
+      <div class="risk-row">
+        <span class="risk-name">Задержка / отказ сертификации Проммаштест</span>
+        <span class="risk-emv">511k</span>
+        <span class="rl rl-crit">крит</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Простой на таможне &gt;14 дней</span>
+        <span class="risk-emv">143k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Изменение ТН ВЭД / санкционные ограничения</span>
+        <span class="risk-emv">369k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Удорожание фрахта сверх договора Траско</span>
+        <span class="risk-emv">86k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Колонка 3: Приёмка и закрытие ── -->
+  <div class="col accent-c">
+    <div>
+      <div class="col-tag">Фаза 6–7 · Приёмка / Закрытие</div>
+      <div class="col-title">Передача товара +<br><span>Финансовое закрытие</span></div>
+    </div>
+    <div class="badge badge-warn"><span class="dot" style="background:var(--orange)"></span> НЕ НАЧАТО</div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" style="color:var(--red)">28.07</div>
+        <div class="stat-lbl">Дедлайн акта</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--cyan)">11.08</div>
+        <div class="stat-lbl">Закрытие проекта</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" style="color:#4ade80">0</div>
+        <div class="stat-lbl">Просрочено</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--orange)">12</div>
+        <div class="stat-lbl">Задач в фазе</div>
+      </div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-head">
+        <span>Прогресс фазы</span>
+        <span class="prog-pct">0%</span>
+      </div>
+      <div class="prog-bg">
+        <div class="prog-bar" style="width:0%;background:var(--cyan)"></div>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Текущий gate</div>
+    <div class="gate">
+      <div class="gate-name">
+        <span class="dot" style="background:#2d3748"></span>
+        Ожидание доставки на склад ПС
+      </div>
+      <div class="gate-tag gt-wait">ожид.</div>
+    </div>
+
+    <div class="sec-lbl">Ключевые вехи</div>
+    <div class="milestones">
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Условия разгрузки согласованы с ПС</span>
+        <span class="ms-date">14.07</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Приёмка + демо включения 12 фигур</span>
+        <span class="ms-date">25.07</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms key">
+        <span class="dot" style="background:var(--cyan)"></span>
+        <span class="ms-name">АКТ ПРИЁМКИ-ПЕРЕДАЧИ ПОДПИСАН</span>
+        <span class="ms-date">28.07</span>
+        <span class="ms-st st-key">ключ.</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Финальный платёж от ПС получен</span>
+        <span class="ms-date">04.08</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+      <div class="ms todo">
+        <span class="dot" style="background:#2d3748"></span>
+        <span class="ms-name">Проект закрыт, архив сформирован</span>
+        <span class="ms-date">11.08</span>
+        <span class="ms-st st-todo">—</span>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Финансовый результат</div>
+    <div class="fin-grid">
+      <div class="fin-item">
+        <div class="fin-lbl">Выручка с НДС</div>
+        <div class="fin-val" style="color:#fff">9 550 179 ₽</div>
+      </div>
+      <div class="fin-item">
+        <div class="fin-lbl">Затраты ПИ</div>
+        <div class="fin-val" style="color:var(--orange)">5 147 000 ₽</div>
+      </div>
+      <div class="fin-item">
+        <div class="fin-lbl">Маржа до налогов</div>
+        <div class="fin-val" style="color:#4ade80">2 681 263 ₽</div>
+      </div>
+      <div class="fin-item">
+        <div class="fin-lbl">Чистая прибыль</div>
+        <div class="fin-val" style="color:#4ade80">2 145 010 ₽</div>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Топ-риски (EMV)</div>
+    <div class="risks">
+      <div class="risk-row">
+        <span class="risk-name">Отказ ПС от подписания акта — блокировка платежа</span>
+        <span class="risk-emv">409k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Несоответствие фигур спецификации при приёмке</span>
+        <span class="risk-emv">307k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+      <div class="risk-row">
+        <span class="risk-name">Повреждение фигур при транспортировке</span>
+        <span class="risk-emv">246k</span>
+        <span class="rl rl-high">выс</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Футер ── -->
+<div class="footer">
+  <div class="footer-src">
+    Источник: документы PMO-01…11 · EMV из реестра рисков PMO-06 · прогресс — по WBS PMO-05 · Версия 1.0 · Только для внутреннего использования ООО «Парковая Инфраструктура»
+  </div>
+  <div class="legend">
+    <div class="leg-item"><span class="leg-dot" style="background:#4ade80"></span> В норме</div>
+    <div class="leg-item"><span class="leg-dot" style="background:var(--orange)"></span> На риске</div>
+    <div class="leg-item"><span class="leg-dot" style="background:var(--red)"></span> Проблемный</div>
+  </div>
+</div>
+
+</body>
+</html>
