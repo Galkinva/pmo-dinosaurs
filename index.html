@@ -20,7 +20,7 @@
     --text:#e8edf5;
     --muted:#7E8AA2;
   }
-  body{background:var(--bg);color:var(--text);font-family:'Exo 2',Arial,sans-serif;font-size:13px;padding:20px;min-width:900px}
+  body{background:var(--bg);color:var(--text);font-family:'Exo 2',Arial,sans-serif;font-size:13px;padding:20px;min-width:0}
 
   /* ── Шапка ── */
   .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
@@ -539,6 +539,28 @@
     <div class="leg-item"><span class="leg-dot" style="background:var(--red)"></span> Проблемный</div>
   </div>
 </div>
+  <style>
+@media(max-width:768px){
+  body{padding:10px;font-size:12px}
+  .header{flex-direction:column;gap:10px;align-items:flex-start}
+  .header-meta{text-align:left;font-size:9px}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .cols{grid-template-columns:1fr}
+  .col{padding:12px}
+  .stat-val{font-size:13px}
+  .col-title{font-size:13px}
+  .fin-grid{grid-template-columns:1fr 1fr}
+  .footer{flex-direction:column;gap:8px;align-items:flex-start}
+  .legend{flex-wrap:wrap;gap:8px}
+  .ms-name{font-size:10px}
+  .risk-name{font-size:10px}
+}
+@media(max-width:420px){
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .fin-grid{grid-template-columns:1fr}
+  .kpi-val{font-size:16px}
+}
+</style>
 
 </body>
 </html>
